@@ -9,10 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -31,6 +28,13 @@ public class User implements UserDetails {
     private String email;
     private String password;
 
+    @Temporal(TemporalType.DATE)
+    private Date dateOfBirth;
+    private String phoneNumber;
+    private String adress;
+    private String city;
+
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "hc_user_roles",
@@ -39,11 +43,33 @@ public class User implements UserDetails {
     )
     private Set<Role> roles = new HashSet<>();
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "hc_user_rdvPris",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "rdvPris_id")
+    )
+    private Set<RendezVousPris> rendezVousPris = new HashSet<>();
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (roles == null && roles.isEmpty()) return List.of();
         return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toList());
+    }
+
+    public boolean addRole(Role role){
+        if(roles.add(role))
+            return true;
+        else
+            return false;
+    }
+
+    public boolean removeRole(Role role){
+        if(roles.remove(role))
+            return true;
+        else
+            return false;
     }
 
     @Override

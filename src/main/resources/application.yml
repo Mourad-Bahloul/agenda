@@ -2,13 +2,13 @@ server:
   port: 8083
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/agenda
-    username: cnb
-    password: cnb
+    url: jdbc:postgresql://localhost:5432/agenda_database
+    username: agenda_user
+    password: agenda_password
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: false
     properties:
       hibernate:
