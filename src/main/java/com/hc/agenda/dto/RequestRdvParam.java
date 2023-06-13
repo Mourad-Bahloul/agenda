@@ -11,17 +11,13 @@ import java.util.Date;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class DtoRendezVous {
-    private String pageReturn;
-    private Long rdvId;
+@AllArgsConstructor
+public class RequestRdvParam {
     private String nameRdv;
     private String client;
     private String professionnel;
-    @Temporal(TemporalType.DATE)
-    private Date dateDuRendezVous;
+    private String dateDuRendezVous;
     private int dureeRendezVous;
     private String description;
-
 }

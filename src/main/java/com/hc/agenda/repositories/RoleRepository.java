@@ -1,7 +1,6 @@
 package com.hc.agenda.repositories;
 
 import com.hc.agenda.entities.Role;
-import com.hc.agenda.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

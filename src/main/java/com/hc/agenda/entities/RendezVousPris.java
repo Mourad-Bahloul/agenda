@@ -16,7 +16,8 @@ import java.util.Date;
 @Table(name = "hc_rdvPris")
 public class RendezVousPris {
     @Id
-    private String RdvId;
+    private Long RdvId;
+    private String nameRdv;
     private String client;
     private String professionnel;
     @Temporal(TemporalType.DATE)
