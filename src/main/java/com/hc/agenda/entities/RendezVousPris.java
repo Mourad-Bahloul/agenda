@@ -16,11 +16,11 @@ import java.util.Date;
 @Table(name = "hc_rdvPris")
 public class RendezVousPris {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long RdvId;
     private String nameRdv;
     private String client;
     private String professionnel;
-    @Temporal(TemporalType.DATE)
     private Date dateDuRendezVous;
     private int dureeRendezVous;
     private String description;

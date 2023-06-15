@@ -23,7 +23,4 @@ public class Role {
         this.name = name;
     }
 
-    // Define role fields and relationships
-
-    // Getters and setters
 }

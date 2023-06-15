@@ -1,0 +1,27 @@
+@Temporal(TemporalType.DATE)
+    //permet de tenir en compte que la date sans min/Sec
+
+SecurityContextHolder.getContext().getAuthentication()
+    //est utilisé pour récupérer l'objet Authentication associé à l'utilisateur actuellement connecté dans le contexte de sécurité de l'application.
+
+@Configuration
+    //indique qu'une classe est une config de l'application
+
+@Component
+    //indique qu'une classe est un composant de Spring et c géré par Spring
+
+.sessionManagement()
+    //methode qui configure la gestion des sessions SpringSecurity
+
+.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+    //indique que le serv ne creera pas de sessions pr les utilisateur et que chaque demande sera traité indépendament
+
+.authenticationProvider(authenticationProvider)
+    //spécifie l'objet authenticationProvider qui sera utilisé pour l'authentification des utilisateurs
+
+.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+    //utilisé pour ajouter un filtre personnalisé avant le filtre standard "UsernamePasswordAuthenticationFilter" dans le flux d'authentification de Spring Security.
+
+
+@Slf4j
+log.info("zefuzeaf");

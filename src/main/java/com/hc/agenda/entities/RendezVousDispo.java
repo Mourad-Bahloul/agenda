@@ -6,19 +6,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "hc_rdvDispo")
-public class RendezVousDispo {
+public class RendezVousDispo { ///////// A COMPLETER
     @Id
-    private String RdvId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long RdvId;
+    private String iCalContent;
     private String professionnel;
-    @Temporal(TemporalType.DATE)
-    private Date dateDisponible;
-    private String description;
+    private int dureeDeUnRdv;
 }

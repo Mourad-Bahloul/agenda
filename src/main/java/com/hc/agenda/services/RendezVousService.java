@@ -54,7 +54,7 @@ public class RendezVousService {
 
 
     public DtoPageResponse deleteRdv(String rdvPris, String pageReturn){
-        var rdvSurRepo = rendezVousPrisRepository.findById(rdvPris).orElseThrow();
+        var rdvSurRepo = rendezVousPrisRepository.findByNameRdv(rdvPris).orElseThrow();
         if(rdvSurRepo!=null) {
             rendezVousPrisRepository.delete(rdvSurRepo);
             return DtoPageResponse.builder()
@@ -70,45 +70,43 @@ public class RendezVousService {
 
     }
 
-    public DtoRendezVous reserveRdv(RequestRdvParam request, String pageReturn){
+    public DtoRendezVous reserveRdvServ(RequestRdvParam request, String pageReturn){
+        if (rendezVousPrisRepository.findByNameRdv(request.getNameRdv()).isEmpty())
+            {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                try {
+                    String dateRequest = request.getDateDuRendezVous();
 
-        if (rendezVousPrisRepository.findById(request.getNameRdv()) == null) {
+                    Date date = dateFormat.parse(dateRequest);
+                    RendezVousPris rdvPris = RendezVousPris.builder()
+                            .nameRdv(request.getNameRdv())
+                            .client(request.getClient())
+                            .professionnel(request.getProfessionnel())
+                            .dateDuRendezVous(date)
+                            .dureeRendezVous(request.getDureeRendezVous())
+                            .description(request.getDescription())
+                            .build();
 
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-            try {
-                String dateRequest = request.getDateDuRendezVous();
+                    rdvPris = rendezVousPrisRepository.save(rdvPris);
 
-                Date date = dateFormat.parse(dateRequest);
-                System.out.println(date);
-                RendezVousPris rdvPris = RendezVousPris.builder()
-                        .nameRdv(request.getNameRdv())
-                        .client(request.getClient())
-                        .professionnel(request.getProfessionnel())
-                        .dateDuRendezVous(date)
-                        .dureeRendezVous(request.getDureeRendezVous())
-                        .description(request.getDescription())
-                        .build();
-                rendezVousPrisRepository.save(rdvPris);
-                rdvPris = rendezVousPrisRepository.findByNameRdv(request.getNameRdv()).orElseThrow();
-                return DtoRendezVous.builder()
-                        .rdvId(rdvPris.getRdvId())
-                        .nameRdv(rdvPris.getNameRdv())
-                        .client(rdvPris.getClient())
-                        .professionnel(rdvPris.getProfessionnel())
-                        .dateDuRendezVous(rdvPris.getDateDuRendezVous())
-                        .dureeRendezVous(rdvPris.getDureeRendezVous())
-                        .description(rdvPris.getDescription())
-                        .build();
-            } catch (ParseException e) {
-                e.printStackTrace();
-                return DtoRendezVous.builder()
-                        .dureeRendezVous(0)
-                        .pageReturn("/error")
-                        .build();
+                    return DtoRendezVous.builder()
+                            .pageReturn(pageReturn)
+                            .rdvId(rdvPris.getRdvId())
+                            .nameRdv(rdvPris.getNameRdv())
+                            .client(rdvPris.getClient())
+                            .professionnel(rdvPris.getProfessionnel())
+                            .dateDuRendezVous(rdvPris.getDateDuRendezVous())
+                            .dureeRendezVous(rdvPris.getDureeRendezVous())
+                            .description(rdvPris.getDescription())
+                            .build();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    return DtoRendezVous.builder()
+                            .dureeRendezVous(0)
+                            .pageReturn("/error")
+                            .build();
+                }
             }
-
-
-        }
         else
             return DtoRendezVous.builder()
                     .dureeRendezVous(0)

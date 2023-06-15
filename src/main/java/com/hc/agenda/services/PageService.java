@@ -2,8 +2,10 @@ package com.hc.agenda.services;
 
 import com.hc.agenda.dto.DtoPageResponse;
 import com.hc.agenda.dto.DtoUser;
+import com.hc.agenda.dto.RequestDtoRoleUser;
 import com.hc.agenda.entities.Role;
 import com.hc.agenda.entities.User;
+import com.hc.agenda.repositories.RoleRepository;
 import com.hc.agenda.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class PageService {
 
+    private final RoleRepository roleRepository;
     private final UserRepository userRepository;
     private final ApplicationConfig applicationConfig;
 
@@ -24,8 +27,9 @@ public class PageService {
                 .build();
     }
 
-    public DtoUser infoUserPage(String pageReturn, User user){
-
+    public DtoUser infoUserPage(String pageReturn){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        var user = userRepository.findByEmail(authentication.getName()).orElseThrow();
         return DtoUser.builder()
                 .pageReturn(pageReturn)
                 .firstname(user.getFirstname())
@@ -66,12 +70,13 @@ public class PageService {
 
     // Modif Utilisateur :
 
-    public DtoPageResponse addRoleUser(String pageReturn, User user, Role role){
+    public DtoPageResponse addRoleUser(String pageReturn, RequestDtoRoleUser request){
+        Role role = roleRepository.findByName(request.getRole()).orElseThrow();
+        var user = userRepository.findByEmail(request.getUserParam()).orElseThrow();
         if(user.addRole(role))
         {
-            System.out.println("avant : " + user.getRoles());
             user.addRole(role);
-            System.out.println("après : " + user.getRoles());
+            userRepository.save(user);
             return DtoPageResponse.builder()
                     .booleanPage("true")
                     .pageReturn(pageReturn)
@@ -86,12 +91,13 @@ public class PageService {
         }
     }
 
-    public DtoPageResponse removeRoleUser(String pageReturn, User user, Role role) {
+    public DtoPageResponse removeRoleUser(String pageReturn, RequestDtoRoleUser request) {
+        Role role = roleRepository.findByName(request.getRole()).orElseThrow();
+        var user = userRepository.findByEmail(request.getUserParam()).orElseThrow();
         if (user.removeRole(role))
         {
-            System.out.println("avant : " + user.getRoles());
             user.removeRole(role);
-            System.out.println("après : " + user.getRoles());
+            userRepository.save(user);
             return DtoPageResponse.builder()
                     .booleanPage("true")
                     .pageReturn(pageReturn)
@@ -106,7 +112,8 @@ public class PageService {
         }
     }
 
-    public DtoPageResponse deleteUser(String pageReturn, User user) {
+    public DtoPageResponse deleteUser(String pageReturn, RequestDtoRoleUser request) {
+        var user = userRepository.findByEmail(request.getUserParam()).orElseThrow();
         var userverif = userRepository.findByEmail(user.getEmail());
         if (userverif!=null)
         {

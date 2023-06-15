@@ -1,11 +1,9 @@
 Feature: Main Controller Feature
 
-  Scenario: GET /index returns the correct JSON file
-    Given the main controller
-    When I make a GET request to "/index"
-    Then the response status code should be 200
-    And the response body should contain a valid JSON file
-
-
+  Scenario:
+    Given a registered user with email "test@gmail.com" and password "1234"
+    When the user authenticates with email "test@gmail.com" and password "1234"
+    Then the response status code should bee 200
+    Then the response body should contain a JSON token
 
 

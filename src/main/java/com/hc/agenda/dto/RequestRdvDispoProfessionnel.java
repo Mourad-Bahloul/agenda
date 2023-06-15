@@ -1,18 +1,16 @@
-package com.hc.agenda.auth;
+package com.hc.agenda.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/// DTO
-
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationRequest {
+@AllArgsConstructor
+public class RequestRdvDispoProfessionnel {
+    private String professionnel;
 
-    private String email;
-    String password;
+
 }

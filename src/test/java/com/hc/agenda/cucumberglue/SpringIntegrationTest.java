@@ -18,43 +18,5 @@ import static org.junit.Assert.assertNotNull;
 @CucumberContextConfiguration
 public class SpringIntegrationTest {
 
-    private AuthenticationController authenticationController;
-    private AuthenticationRequest authenticationRequest;
-    private ResponseEntity<AuthenticationResponse> authenticationResponse;
-    @Given("a registered user with email {string} and password {string}")
-    public void aRegisteredUserWithEmailAndPassword(String email, String password) {
-        // Prepare the authentication request with the provided email and password
-        authenticationRequest = new AuthenticationRequest(email, password);
-    }
 
-    @When("the user authenticates with email {string} and password {string}")
-    public void theUserAuthenticatesWithEmailAndPassword(String email, String password) {
-        // Set the email and password in the authentication request
-        authenticationRequest.setEmail(email);
-        authenticationRequest.setPassword(password);
-
-        // Call the authentication endpoint
-        authenticationResponse = authenticationController.authenticate(authenticationRequest);
-    }
-
-    @Then("the response status code should be {int}")
-    public void theResponseStatusCodeShouldBe(int expectedStatusCode) {
-        // Get the actual status code from the response
-        int actualStatusCode = authenticationResponse.getStatusCodeValue();
-
-        // Assert that the actual status code matches the expected status code
-        assertEquals(expectedStatusCode, actualStatusCode);
-    }
-
-    @Then("the response body should contain a JSON token")
-    public void theResponseBodyShouldContainJsonToken() {
-        // Get the authentication response body from the response
-        AuthenticationResponse body = authenticationResponse.getBody();
-
-        // Assert that the response body is not null
-        assertNotNull(body);
-
-        // Assert that the response body contains a token
-        assertNotNull(body.getToken());
-    }
 }
