@@ -20,4 +20,5 @@ public class DtoRdvDispo {
     private Date horaireFin;
     private int dureeRendezVous;
     private String description;
+    private String profession;
 }

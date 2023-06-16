@@ -18,6 +18,8 @@ public class RequestRdvDispoPro {
 
     private Long professionnelId;
     private String description;
+    private Long rdvId;
+    private String typeRdv;
 
     //debut iCal
     private int jourDebut;
@@ -30,8 +32,6 @@ public class RequestRdvDispoPro {
     private int minuteFin;
 
     //repetition
-    private int jourRepetition;
     private int dureeRdv;
-
     List<Boolean> jourDisponible;
 }

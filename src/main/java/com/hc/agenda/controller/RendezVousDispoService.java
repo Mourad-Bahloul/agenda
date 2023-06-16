@@ -1,13 +1,11 @@
 package com.hc.agenda.controller;
 
-import com.hc.agenda.dto.DtoPageResponse;
-import com.hc.agenda.dto.DtoRdvDispo;
-import com.hc.agenda.dto.RequestRdvDispoPro;
-import com.hc.agenda.dto.RequestRdvDispoProfessionnel;
+import com.hc.agenda.dto.*;
 import com.hc.agenda.entities.RendezVousDispo;
 import com.hc.agenda.repositories.RendezVousDispoRepository;
 import com.hc.agenda.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.data.ParserException;
@@ -18,11 +16,13 @@ import net.fortuna.ical4j.model.WeekDay;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.RRule;
+import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Version;
 import net.fortuna.ical4j.validate.ValidationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -31,9 +31,10 @@ import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
-@Service
+@Service @Slf4j
 @RequiredArgsConstructor
 public class RendezVousDispoService {
 
@@ -65,11 +66,15 @@ public class RendezVousDispoService {
             return null;
         }
     }
+    private String generateUniqueUid() {
+        return UUID.randomUUID().toString();
+    }
 
     public DtoPageResponse creeICalendar(RequestRdvDispoPro request){
         Calendar calendar = new Calendar();
         calendar.getProperties().add(new ProdId("-//Amine RABBOUCH//iCal4j 1.0//EN"));
         calendar.getProperties().add(Version.VERSION_2_0);
+        calendar.getProperties().add(new Uid());
 
         java.util.Calendar calendarStart = java.util.Calendar.getInstance();
         calendarStart.set(java.util.Calendar.DAY_OF_MONTH, request.getJourDebut());
@@ -82,6 +87,8 @@ public class RendezVousDispoService {
         calendarEnd.set(java.util.Calendar.MINUTE,request.getMinuteFin());
 
         VEvent calEvent = new VEvent(new DateTime(calendarStart.getTime()), new DateTime(calendarEnd.getTime()), request.getDescription());
+        String uid = generateUniqueUid();
+        calEvent.getProperties().add(new Uid(uid));
 
         try {
             Recur recurrence = new Recur("FREQ=DAILY");
@@ -118,6 +125,7 @@ public class RendezVousDispoService {
                     .iCalContent(iCalendarString)
                     .professionnel(user.getUsername())
                     .dureeDeUnRdv(request.getDureeRdv())
+                    .profession(request.getTypeRdv())
                     .build();
 
             rendezVousDispoRepository.save(rdvDispo);
@@ -138,9 +146,10 @@ public class RendezVousDispoService {
     }
 
     public DtoPageResponse supprICalendar(RequestRdvDispoPro request){//A COMPLETER
-        if()//on find)
+        if(rendezVousDispoRepository.findById(request.getRdvId())!=null)//on find)
         {
-            rendezVousDispoRepository.delete();
+            var rdv = rendezVousDispoRepository.findById(request.getRdvId()).orElseThrow();
+            rendezVousDispoRepository.delete(rdv);
             return DtoPageResponse.builder()
                     .pageReturn("/pageSupprime")
                     .booleanPage("true")
@@ -153,15 +162,13 @@ public class RendezVousDispoService {
                     .build();
     }
 
-    public List<DtoRdvDispo> voirICalendarType(RequestRdvDispoPro request){
-
-    }
-
-    public List<DtoRdvDispo> voirICalendarPro(RequestRdvDispoProfessionnel request){
+    public List<DtoRdvDispo> voirICalendarType(RequestRdvDispoType request){
         List<RendezVousDispo> rendezVousDispos = rendezVousDispoRepository.findAll();
 
+       // log(request.getProfession());
+       // for (rendezVousDispos)
         List<DtoRdvDispo> listDtoRdvDispo = rendezVousDispos.stream()
-                .filter(rdvDispo -> rdvDispo.getProfessionnel().equals(request.getProfessionnel()))
+                .filter(rdvDispo -> rdvDispo.getProfession().equals(request.getProfession()))
                 .map(rdvDispo -> {
                     try {
                         Calendar calendar = deserialiseriCal(rdvDispo.getICalContent());
@@ -191,6 +198,59 @@ public class RendezVousDispoService {
                                 .jourDisponible(jourDisponible)
                                 .horaireDebut(startDate)
                                 .horaireFin(endDate)
+                                .profession(request.getProfession())
+                                .dureeRendezVous(rdvDispo.getDureeDeUnRdv())
+                                .description(event.getDescription().getValue())
+                                .build();
+
+                        return dtoRdvDispo;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return null;
+                    }
+                })
+                .collect(Collectors.toList());
+
+        return listDtoRdvDispo;
+    }
+
+    public List<DtoRdvDispo> voirICalendarPro(RequestRdvDispoProfessionnel request){
+        List<RendezVousDispo> rendezVousDispos = rendezVousDispoRepository.findAll();
+
+        List<DtoRdvDispo> listDtoRdvDispo = rendezVousDispos.stream()
+                .filter(rdvDispo -> rdvDispo.getProfessionnel().equals(request.getProfessionnel()))
+                .map(rdvDispo -> {
+                    System.out.println("test");
+                    try {
+                        Calendar calendar = deserialiseriCal(rdvDispo.getICalContent());
+                        VEvent event = (VEvent) calendar.getComponents().get(0); // Supposant qu'il y ait un seul événement dans le calendrier
+
+                        RRule rrule = (RRule) event.getProperties().getProperty("RRULE");
+                        Date startDate = event.getStartDate().getDate();
+                        Date endDate = event.getEndDate().getDate();
+
+                        List<Boolean> jourDisponible = Arrays.asList(
+                                !rrule.getRecur().getDayList().contains(WeekDay.MO),
+                                !rrule.getRecur().getDayList().contains(WeekDay.TU),
+                                !rrule.getRecur().getDayList().contains(WeekDay.WE),
+                                !rrule.getRecur().getDayList().contains(WeekDay.TH),
+                                !rrule.getRecur().getDayList().contains(WeekDay.FR),
+                                !rrule.getRecur().getDayList().contains(WeekDay.SA),
+                                !rrule.getRecur().getDayList().contains(WeekDay.SU)
+                        );
+
+                        String profession = rdvDispo.getProfession();
+                        long durationMillis = endDate.getTime() - startDate.getTime();
+                        int dureeRendezVous = (int) (durationMillis / (1000 * 60)); // en minutes
+
+                        // Convertir les données du calendrier en DtoRdvDispo
+                        DtoRdvDispo dtoRdvDispo = DtoRdvDispo.builder()
+                                .RdvId(rdvDispo.getRdvId().toString())
+                                .professionnel(rdvDispo.getProfessionnel())
+                                .jourDisponible(jourDisponible)
+                                .horaireDebut(startDate)
+                                .horaireFin(endDate)
+                                .profession(profession)
                                 .dureeRendezVous(rdvDispo.getDureeDeUnRdv())
                                 .description(event.getDescription().getValue())
                                 .build();
@@ -206,5 +266,7 @@ public class RendezVousDispoService {
         return listDtoRdvDispo;
 
     }
+
+
 
 }

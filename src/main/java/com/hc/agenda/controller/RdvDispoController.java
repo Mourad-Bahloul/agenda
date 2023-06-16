@@ -1,9 +1,6 @@
 package com.hc.agenda.controller;
 
-import com.hc.agenda.dto.DtoPageResponse;
-import com.hc.agenda.dto.DtoRdvDispo;
-import com.hc.agenda.dto.RequestRdvDispoPro;
-import com.hc.agenda.dto.RequestRdvDispoProfessionnel;
+import com.hc.agenda.dto.*;
 import com.hc.agenda.repositories.RendezVousPrisRepository;
 import com.hc.agenda.services.RendezVousService;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +32,7 @@ public class RdvDispoController {
     }
 
     @PostMapping("/voirRdvCalendrierType")
-    public ResponseEntity<List<DtoRdvDispo>> voirUnCalendrierRdvType(@RequestBody RequestRdvDispoPro request){
+    public ResponseEntity<List<DtoRdvDispo>> voirUnCalendrierRdvType(@RequestBody RequestRdvDispoType request){
 
         return ResponseEntity.ok(rendezVousDispoService.voirICalendarType(request));
     }
