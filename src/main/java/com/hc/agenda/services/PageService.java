@@ -1,6 +1,7 @@
 package com.hc.agenda.services;
 
 import com.hc.agenda.dto.DtoPageResponse;
+import com.hc.agenda.dto.DtoRoleUser;
 import com.hc.agenda.dto.DtoUser;
 import com.hc.agenda.dto.RequestDtoRoleUser;
 import com.hc.agenda.entities.Role;
@@ -130,5 +131,14 @@ public class PageService {
                     .pageReturn("/errorPage")
                     .build();
         }
+    }
+
+    public DtoRoleUser listRoleUser(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        var user = userRepository.findByEmail(authentication.getName()).orElseThrow();
+        return DtoRoleUser.builder()
+                .roles(user.getRoles())
+                .build();
+
     }
 }

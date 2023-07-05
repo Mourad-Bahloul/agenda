@@ -1,14 +1,12 @@
 package com.hc.agenda.controller;
 
 import com.hc.agenda.dto.DtoPageResponse;
+import com.hc.agenda.dto.DtoRoleUser;
 import com.hc.agenda.dto.DtoUser;
 import com.hc.agenda.services.PageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/main")
@@ -24,10 +22,13 @@ public class MainController {
         return ResponseEntity.ok(pageService.infoPage("True","/api/v1/main/agenda"));
     }
 
+
+    //@CrossOrigin //(origins = "http://localhost:3000")
     @GetMapping("/modifInfo")
     public ResponseEntity<DtoUser> modifInfo() {
         return ResponseEntity.ok(pageService.infoUserPage("/api/v1/main/modifInfo"));
     }
+
 
     @GetMapping("/pro/rdv")         /// A compléter apres ajout RdvDispo
     @ResponseBody

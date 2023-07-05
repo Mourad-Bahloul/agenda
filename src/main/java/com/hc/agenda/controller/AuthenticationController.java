@@ -5,6 +5,7 @@ import com.hc.agenda.auth.AuthenticationResponse;
 import com.hc.agenda.auth.AuthenticationService;
 import com.hc.agenda.auth.RegisterRequest;
 import com.hc.agenda.dto.DtoPageResponse;
+import com.hc.agenda.dto.DtoRoleUser;
 import com.hc.agenda.services.PageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -37,5 +38,10 @@ public class AuthenticationController {
     @GetMapping("/openVerifTest")
     public ResponseEntity<DtoPageResponse> openVerifTest(@RequestBody String password){
         return ResponseEntity.ok(pageService.verifMdpPage(password, "/api/v1/auth/verification"));
+    }
+
+    @GetMapping("/roles")
+    public ResponseEntity<DtoRoleUser> giveRoles() {
+        return ResponseEntity.ok(pageService.listRoleUser());
     }
 }
