@@ -76,7 +76,7 @@ public class PageService {
         var user = userRepository.findByEmail(request.getUserParam()).orElseThrow();
         if(user.addRole(role))
         {
-            user.addRole(role);
+            //user.addRole(role);
             userRepository.save(user);
             return DtoPageResponse.builder()
                     .booleanPage("true")
@@ -97,7 +97,7 @@ public class PageService {
         var user = userRepository.findByEmail(request.getUserParam()).orElseThrow();
         if (user.removeRole(role))
         {
-            user.removeRole(role);
+            //user.removeRole(role);
             userRepository.save(user);
             return DtoPageResponse.builder()
                     .booleanPage("true")
