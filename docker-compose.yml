@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: agenda_user
+      POSTGRES_PASSWORD: agenda_password
+      POSTGRES_DB: agenda_database
+    volumes:
+      - db-data:/c/Users/User1/Documents/StageProjet/Docker/data
+    ports:
+      - "5432:5432"
+volumes:
+  db-data:
