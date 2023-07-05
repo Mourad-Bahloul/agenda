@@ -25,6 +25,7 @@ public class MainController {
 
     //@CrossOrigin //(origins = "http://localhost:3000")
     @GetMapping("/modifInfo")
+    @ResponseBody
     public ResponseEntity<DtoUser> modifInfo() {
         return ResponseEntity.ok(pageService.infoUserPage("/api/v1/main/modifInfo"));
     }
