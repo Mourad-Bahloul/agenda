@@ -1,4 +1,4 @@
-package com.hc.agenda.controller;
+package com.hc.agenda.services;
 
 import com.hc.agenda.dto.*;
 import com.hc.agenda.entities.RendezVousDispo;

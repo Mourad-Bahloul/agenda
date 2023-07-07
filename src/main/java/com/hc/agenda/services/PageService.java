@@ -133,7 +133,8 @@ public class PageService {
         }
     }
 
-    public DtoRoleUser listRoleUser(){
+    public DtoRoleUser listRoleUser(String token){
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         var user = userRepository.findByEmail(authentication.getName()).orElseThrow();
         return DtoRoleUser.builder()

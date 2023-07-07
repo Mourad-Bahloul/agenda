@@ -40,8 +40,8 @@ public class AuthenticationController {
         return ResponseEntity.ok(pageService.verifMdpPage(password, "/api/v1/auth/verification"));
     }
 
-    @GetMapping("/roles")
-    public ResponseEntity<DtoRoleUser> giveRoles() {
-        return ResponseEntity.ok(pageService.listRoleUser());
+    @PostMapping("/roles")
+    public ResponseEntity<DtoRoleUser> giveRoles(@RequestBody String token) {
+        return ResponseEntity.ok(pageService.listRoleUser(token));
     }
 }

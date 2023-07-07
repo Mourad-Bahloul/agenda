@@ -2,6 +2,7 @@ package com.hc.agenda.controller;
 
 import com.hc.agenda.dto.*;
 import com.hc.agenda.repositories.RendezVousPrisRepository;
+import com.hc.agenda.services.RendezVousDispoService;
 import com.hc.agenda.services.RendezVousService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
