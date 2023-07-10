@@ -40,7 +40,6 @@ public class PageService {
                 .adress(user.getAdress())
                 .city(user.getCity())
                 .dateOfBirth(user.getDateOfBirth())
-                .password(user.getPassword())
                 .build();
     }
 

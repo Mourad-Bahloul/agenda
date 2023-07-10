@@ -18,7 +18,6 @@ public class DtoUser {
     private String firstname;
     private String lastname;
     private String email;
-    private String password;
     @Temporal(TemporalType.DATE)
     private Date dateOfBirth;
     private String phoneNumber;
