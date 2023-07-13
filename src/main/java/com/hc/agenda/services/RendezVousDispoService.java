@@ -165,7 +165,10 @@ public class RendezVousDispoService {
     public List<DtoRdvDispo> voirICalendarType(RequestRdvDispoType request){
         List<RendezVousDispo> rendezVousDispos = rendezVousDispoRepository.findAll();
 
-       // log(request.getProfession());
+        //Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        //var user = userRepository.findByEmail(authentication.getName()).orElseThrow();
+
+        // log(request.getProfession());
        // for (rendezVousDispos)
         List<DtoRdvDispo> listDtoRdvDispo = rendezVousDispos.stream()
                 .filter(rdvDispo -> rdvDispo.getProfession().equals(request.getProfession()))
@@ -220,7 +223,7 @@ public class RendezVousDispoService {
         List<DtoRdvDispo> listDtoRdvDispo = rendezVousDispos.stream()
                 .filter(rdvDispo -> rdvDispo.getProfessionnel().equals(request.getProfessionnel()))
                 .map(rdvDispo -> {
-                    System.out.println("test");
+
                     try {
                         Calendar calendar = deserialiseriCal(rdvDispo.getICalContent());
                         VEvent event = (VEvent) calendar.getComponents().get(0); // Supposant qu'il y ait un seul événement dans le calendrier
@@ -252,11 +255,12 @@ public class RendezVousDispoService {
                                 .horaireFin(endDate)
                                 .profession(profession)
                                 .dureeRendezVous(rdvDispo.getDureeDeUnRdv())
-                                .description(event.getDescription().getValue())
+                                .description(event.getDescription() != null ? event.getDescription().getValue() : null)
                                 .build();
 
                         return dtoRdvDispo;
                     } catch (Exception e) {
+
                         e.printStackTrace();
                         return null;
                     }
