@@ -14,7 +14,6 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DtoRendezVous {
-    private String pageReturn;
     private Long rdvId;
     private String nameRdv;
     private String client;

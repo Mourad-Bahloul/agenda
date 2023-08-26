@@ -20,6 +20,6 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RequestRdvDispoType {
-    private String profession;
+    private String type;
 }
 

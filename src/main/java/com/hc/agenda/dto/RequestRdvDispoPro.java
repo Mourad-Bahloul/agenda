@@ -22,12 +22,12 @@ public class RequestRdvDispoPro {
     private String typeRdv;
 
     //debut iCal
-    private int jourDebut;
+    private Date jourDebut;
     private int heureDebut;
     private int minuteDebut;
 
     //fin iCal
-    private int jourFin;
+    private Date jourFin;
     private int heureFin;
     private int minuteFin;
 

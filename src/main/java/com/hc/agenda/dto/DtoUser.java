@@ -1,5 +1,6 @@
 package com.hc.agenda.dto;
 
+import com.hc.agenda.entities.User;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
@@ -14,7 +15,6 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DtoUser {
-    private String pageReturn;
     private String firstname;
     private String lastname;
     private String email;
@@ -23,5 +23,15 @@ public class DtoUser {
     private String phoneNumber;
     private String adress;
     private String city;
-    private String rolePrincipale;
+
+
+    public DtoUser(User user) {
+                this.firstname = user.getFirstname();
+                this.lastname = user.getLastname();
+                this.email = user.getEmail();
+                this.adress = user.getAdress();
+                this.city = user.getCity();
+                this.dateOfBirth = user.getDateOfBirth();
+                this.phoneNumber = user.getPhoneNumber();
+    }
 }

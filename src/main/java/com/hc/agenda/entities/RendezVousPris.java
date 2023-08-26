@@ -24,4 +24,8 @@ public class RendezVousPris {
     private Date dateDuRendezVous;
     private int dureeRendezVous;
     private String description;
+
+    private int heure;
+    private int minute;
+    private int seconde;
 }

@@ -17,7 +17,7 @@ public class RequestRdvParam {
     private String nameRdv;
     private String client;
     private String professionnel;
-    private String dateDuRendezVous;
+    private Date dateDuRendezVous;
     private int dureeRendezVous;
-    private String description;
+    private String profession;
 }

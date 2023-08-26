@@ -26,5 +26,4 @@ public class RegisterRequest {
     private String phoneNumber;
     private String adress;
     private String city;
-    private String rolePrincipale;
 }

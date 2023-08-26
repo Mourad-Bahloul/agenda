@@ -11,5 +11,4 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DtoPageResponse {
     private String booleanPage;
-    private String pageReturn;
 }

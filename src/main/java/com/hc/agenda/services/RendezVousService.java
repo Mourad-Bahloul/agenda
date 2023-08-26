@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,97 +22,99 @@ public class RendezVousService {
              // A COMPLETER
     private final RendezVousPrisRepository rendezVousPrisRepository;
 
-    public DtoRendezVous getOneRdv(RequestRdvPris request, String pageReturn){
+    public DtoRendezVous getOneRdv(RequestRdvPris request) {
         var rdvPris = rendezVousPrisRepository.findByNameRdv(request.getNameRdv()).orElseThrow();
-        return DtoRendezVous.builder()
-                .pageReturn(pageReturn)
-                .rdvId(rdvPris.getRdvId())
-                .nameRdv(rdvPris.getNameRdv())
-                .client(rdvPris.getClient())
-                .professionnel(rdvPris.getProfessionnel())
-                .dateDuRendezVous(rdvPris.getDateDuRendezVous())
-                .dureeRendezVous(rdvPris.getDureeRendezVous())
-                .description(rdvPris.getDescription())
-                .build();
+        Date dateOriginale = rdvPris.getDateDuRendezVous(); // Récupération de la date originale
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(dateOriginale);
+        calendar.set(Calendar.HOUR_OF_DAY, rdvPris.getHeure());
+        calendar.set(Calendar.MINUTE, rdvPris.getMinute());
+        calendar.set(Calendar.SECOND, rdvPris.getSeconde());
+
+        Date nouvelleDate = calendar.getTime();
+            return DtoRendezVous.builder()
+                    .rdvId(rdvPris.getRdvId())
+                    .nameRdv(rdvPris.getNameRdv())
+                    .client(rdvPris.getClient())
+                    .professionnel(rdvPris.getProfessionnel())
+                    .dateDuRendezVous(nouvelleDate)
+                    .dureeRendezVous(rdvPris.getDureeRendezVous())
+                    .description(rdvPris.getDescription())
+                    .build();
     }
 
 
-    public List<DtoRendezVous> getAllRdv(String pageReturn) {
+    public List<DtoRendezVous> getAllRdv() {
         List<RendezVousPris> requestList = rendezVousPrisRepository.findAll();
 
         return requestList.stream()
                 .map(request -> {
-                    var rdvPris = rendezVousPrisRepository.findByNameRdv(request.getNameRdv()).orElseThrow();
-                    var rdvPrisParam = RequestRdvPris.builder()
-                            .nameRdv(rdvPris.getNameRdv())
-                            .build();
-                    return getOneRdv(rdvPrisParam, pageReturn);
+                    return getOneRdv(RequestRdvPris.builder()
+                            .nameRdv(request.getNameRdv())
+                            .build());
                 })
                 .collect(Collectors.toList());
     }
 
 
 
-
-    public DtoPageResponse deleteRdv(String rdvPris, String pageReturn){
+    public DtoPageResponse deleteRdv(String rdvPris){
         var rdvSurRepo = rendezVousPrisRepository.findByNameRdv(rdvPris).orElseThrow();
         if(rdvSurRepo!=null) {
             rendezVousPrisRepository.delete(rdvSurRepo);
             return DtoPageResponse.builder()
-                    .pageReturn(pageReturn)
                     .booleanPage("true")
                     .build();
         }
         else
             return DtoPageResponse.builder()
-                    .pageReturn("/error")
                     .booleanPage("false")
                     .build();
 
     }
 
-    public DtoRendezVous reserveRdvServ(RequestRdvParam request, String pageReturn){
-        if (rendezVousPrisRepository.findByNameRdv(request.getNameRdv()).isEmpty())
-            {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                try {
-                    String dateRequest = request.getDateDuRendezVous();
+    public DtoRendezVous reserveRdvServ(RequestRdvParam request){
+        Date rendezVousDate = request.getDateDuRendezVous();
 
-                    Date date = dateFormat.parse(dateRequest);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(rendezVousDate);
+
+        int heure = cal.get(Calendar.HOUR_OF_DAY);
+        int minute = cal.get(Calendar.MINUTE);
+        int seconde = cal.get(Calendar.SECOND);
+        //if (rendezVousPrisRepository.findByNameRdv(request.getNameRdv()).isEmpty())
+           // {
                     RendezVousPris rdvPris = RendezVousPris.builder()
                             .nameRdv(request.getNameRdv())
                             .client(request.getClient())
                             .professionnel(request.getProfessionnel())
-                            .dateDuRendezVous(date)
                             .dureeRendezVous(request.getDureeRendezVous())
-                            .description(request.getDescription())
+                            .dateDuRendezVous(request.getDateDuRendezVous())
+                            .description(request.getProfession())
+                            .heure(heure)
+                            .minute(minute)
+                            .seconde(seconde)
                             .build();
 
                     rdvPris = rendezVousPrisRepository.save(rdvPris);
 
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+
                     return DtoRendezVous.builder()
-                            .pageReturn(pageReturn)
                             .rdvId(rdvPris.getRdvId())
                             .nameRdv(rdvPris.getNameRdv())
                             .client(rdvPris.getClient())
                             .professionnel(rdvPris.getProfessionnel())
-                            .dateDuRendezVous(rdvPris.getDateDuRendezVous())
+                            .dateDuRendezVous(request.getDateDuRendezVous())
                             .dureeRendezVous(rdvPris.getDureeRendezVous())
                             .description(rdvPris.getDescription())
                             .build();
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                    return DtoRendezVous.builder()
-                            .dureeRendezVous(0)
-                            .pageReturn("/error")
-                            .build();
-                }
-            }
-        else
-            return DtoRendezVous.builder()
-                    .dureeRendezVous(0)
-                    .pageReturn("/error")
-                    .build();
+        //    }
+       // else
+        //    return DtoRendezVous.builder()
+          //          .dureeRendezVous(0)
+            //        .build();
     }
 }
 

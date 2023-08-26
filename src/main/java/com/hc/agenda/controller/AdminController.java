@@ -2,8 +2,6 @@ package com.hc.agenda.controller;
 
 import com.hc.agenda.dto.DtoPageResponse;
 import com.hc.agenda.dto.RequestDtoRoleUser;
-import com.hc.agenda.repositories.RoleRepository;
-import com.hc.agenda.repositories.UserRepository;
 import com.hc.agenda.services.PageService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +24,7 @@ public class AdminController {
             @RequestBody RequestDtoRoleUser request
             )
     {
-        return ResponseEntity.ok(pageService.addRoleUser("/api/v1/admin/addRoleUtilisateur", request));
+        return ResponseEntity.ok(pageService.addRoleUser(request));
     }
 
     @PostMapping("/removeRoleUtilisateur")
@@ -35,7 +33,7 @@ public class AdminController {
             @RequestBody RequestDtoRoleUser request
     )
     {
-        return ResponseEntity.ok(pageService.removeRoleUser("/api/v1/admin/removeRoleUtilisateur",request));
+        return ResponseEntity.ok(pageService.removeRoleUser(request));
     }
 
     @PostMapping("/deleteUtilisateur")
@@ -44,7 +42,7 @@ public class AdminController {
             @RequestBody RequestDtoRoleUser request
     )
     {
-        return ResponseEntity.ok(pageService.deleteUser("/api/v1/admin/deleteUtilisateur", request));
+        return ResponseEntity.ok(pageService.deleteUser( request));
     }
 
 }

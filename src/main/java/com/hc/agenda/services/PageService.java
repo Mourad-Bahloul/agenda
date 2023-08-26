@@ -1,5 +1,6 @@
 package com.hc.agenda.services;
 
+import com.hc.agenda.auth.RegisterRequest;
 import com.hc.agenda.dto.DtoPageResponse;
 import com.hc.agenda.dto.DtoRoleUser;
 import com.hc.agenda.dto.DtoUser;
@@ -21,18 +22,16 @@ public class PageService {
     private final UserRepository userRepository;
     private final ApplicationConfig applicationConfig;
 
-    public DtoPageResponse infoPage(String bool, String pageReturn){
+    public DtoPageResponse infoPage(String bool){
         return DtoPageResponse.builder()
                 .booleanPage(bool)
-                .pageReturn(pageReturn)
                 .build();
     }
 
-    public DtoUser infoUserPage(String pageReturn){
+    public DtoUser infoUserPage(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         var user = userRepository.findByEmail(authentication.getName()).orElseThrow();
         return DtoUser.builder()
-                .pageReturn(pageReturn)
                 .firstname(user.getFirstname())
                 .lastname(user.getLastname())
                 .email(user.getEmail())
@@ -43,23 +42,23 @@ public class PageService {
                 .build();
     }
 
-    public DtoPageResponse verifMdpPage(String password, String pageReturn) {
-
+    public DtoPageResponse modifUserPage(RegisterRequest request){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         var user = userRepository.findByEmail(authentication.getName()).orElseThrow();
-
-        boolean v2 = comparePassword(password, user);
-        if (v2)
-            return DtoPageResponse.builder()
-                    .booleanPage("true")
-                    .pageReturn(pageReturn)
-                    .build();
-        else
-            return DtoPageResponse.builder()
-                    .booleanPage("false")
-                    .pageReturn("/errorPage")
-                    .build();
+        user.setFirstname(request.getFirstname());
+        user.setLastname(request.getLastname());
+        user.setEmail(request.getEmail());
+        user.setPhoneNumber(request.getPhoneNumber());
+        user.setAdress(request.getAdress());
+        user.setCity(request.getCity());
+        user.setDateOfBirth(request.getDateOfBirth());
+        userRepository.save(user);
+        return DtoPageResponse.builder()
+                .booleanPage("true")
+                .build();
     }
+
+
 
     public boolean comparePassword(String password, User utilisateur) {
         if(applicationConfig.passwordEncoder().matches(password,utilisateur.getPassword()))
@@ -70,28 +69,25 @@ public class PageService {
 
     // Modif Utilisateur :
 
-    public DtoPageResponse addRoleUser(String pageReturn, RequestDtoRoleUser request){
+    public DtoPageResponse addRoleUser(RequestDtoRoleUser request){
         Role role = roleRepository.findByName(request.getRole()).orElseThrow();
         var user = userRepository.findByEmail(request.getUserParam()).orElseThrow();
         if(user.addRole(role))
         {
-            //user.addRole(role);
             userRepository.save(user);
             return DtoPageResponse.builder()
                     .booleanPage("true")
-                    .pageReturn(pageReturn)
                     .build();
         }
         else
         {
             return DtoPageResponse.builder()
                     .booleanPage("false")
-                    .pageReturn("/errorPage")
                     .build();
         }
     }
 
-    public DtoPageResponse removeRoleUser(String pageReturn, RequestDtoRoleUser request) {
+    public DtoPageResponse removeRoleUser(RequestDtoRoleUser request) {
         Role role = roleRepository.findByName(request.getRole()).orElseThrow();
         var user = userRepository.findByEmail(request.getUserParam()).orElseThrow();
         if (user.removeRole(role))
@@ -100,19 +96,17 @@ public class PageService {
             userRepository.save(user);
             return DtoPageResponse.builder()
                     .booleanPage("true")
-                    .pageReturn(pageReturn)
                     .build();
         }
         else
         {
             return DtoPageResponse.builder()
                     .booleanPage("false")
-                    .pageReturn("/errorPage")
                     .build();
         }
     }
 
-    public DtoPageResponse deleteUser(String pageReturn, RequestDtoRoleUser request) {
+    public DtoPageResponse deleteUser(RequestDtoRoleUser request) {
         var user = userRepository.findByEmail(request.getUserParam()).orElseThrow();
         var userverif = userRepository.findByEmail(user.getEmail());
         if (userverif!=null)
@@ -120,14 +114,12 @@ public class PageService {
             userRepository.delete(user);
             return DtoPageResponse.builder()
                     .booleanPage("true")
-                    .pageReturn(pageReturn)
                     .build();
         }
         else
         {
             return DtoPageResponse.builder()
                     .booleanPage("false")
-                    .pageReturn("/errorPage")
                     .build();
         }
     }

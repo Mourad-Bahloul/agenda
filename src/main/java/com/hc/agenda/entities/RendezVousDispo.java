@@ -12,13 +12,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "hc_rdvDispo")
-public class RendezVousDispo { ///////// A COMPLETER
+public class RendezVousDispo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long RdvId;
     @Column(length = 1000)
     private String iCalContent;
-    private String professionnel;
+    @Column(name = "user_id")
+    private User user;
     private String profession;
     private int dureeDeUnRdv;
 }
