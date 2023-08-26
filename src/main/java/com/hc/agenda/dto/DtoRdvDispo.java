@@ -14,11 +14,13 @@ import java.util.List;
 @NoArgsConstructor
 public class DtoRdvDispo {
     private String RdvId;
-    private String professionnel;
+    private DtoUser userDto;
     List<Boolean> jourDisponible;
     private Date horaireDebut;
     private Date horaireFin;
     private int dureeRendezVous;
     private String description;
     private String profession;
+
+
 }
