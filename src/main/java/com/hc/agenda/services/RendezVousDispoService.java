@@ -5,6 +5,7 @@ import com.hc.agenda.entities.RendezVousDispo;
 import com.hc.agenda.entities.User;
 import com.hc.agenda.repositories.RendezVousDispoRepository;
 import com.hc.agenda.repositories.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.fortuna.ical4j.data.CalendarBuilder;
@@ -72,6 +73,7 @@ public class RendezVousDispoService {
         return UUID.randomUUID().toString();
     }
 
+    @Transactional
     public DtoPageResponse creeICalendar(RequestRdvDispoPro request){
         Calendar calendar = new Calendar();
         calendar.getProperties().add(new ProdId("-//Amine RABBOUCH//iCal4j 1.0//EN"));
@@ -148,8 +150,7 @@ public class RendezVousDispoService {
     public DtoPageResponse supprICalendar(RequestRdvDispoPro request){//A COMPLETER
         if(rendezVousDispoRepository.findById(request.getRdvId())!=null)//on find)
         {
-            var rdv = rendezVousDispoRepository.findById(request.getRdvId()).orElseThrow();
-            rendezVousDispoRepository.delete(rdv);
+            rendezVousDispoRepository.deleteById(request.getRdvId());
             return DtoPageResponse.builder()
                     .booleanPage("true")
                     .build();
@@ -210,7 +211,8 @@ public class RendezVousDispoService {
     }
 
     public List<DtoRdvDispo> voirICalendarPro(RequestRdvDispoProfessionnel request){
-        List<RendezVousDispo> rendezVousDispos = rendezVousDispoRepository.findAll();
+        User user = userRepository.findByEmail(request.getProfessionnel()).orElse(null);
+        List<RendezVousDispo> rendezVousDispos = rendezVousDispoRepository.findByUser(user);
 
         List<DtoRdvDispo> listDtoRdvDispo = rendezVousDispos.stream()
                 .filter(rdvDispo -> rdvDispo.getUser().getEmail().equals(request.getProfessionnel()))

@@ -18,7 +18,9 @@ public class RendezVousDispo {
     private Long RdvId;
     @Column(length = 1000)
     private String iCalContent;
-    @Column(name = "user_id")
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
     private String profession;
     private int dureeDeUnRdv;
