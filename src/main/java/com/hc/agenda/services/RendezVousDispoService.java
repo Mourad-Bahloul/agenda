@@ -145,8 +145,8 @@ public class RendezVousDispoService {
                 .build();
     }
 
-    public DtoPageResponse supprICalendar(RequestRdvDispoPro request){//A COMPLETER
-        if(rendezVousDispoRepository.findById(request.getRdvId())!=null)//on find)
+    public DtoPageResponse supprICalendar(RequestRdvDispoPro request){
+        if(rendezVousDispoRepository.findById(request.getRdvId())!=null)
         {
             rendezVousDispoRepository.deleteById(request.getRdvId());
             return DtoPageResponse.builder()
