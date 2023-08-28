@@ -24,7 +24,6 @@ public class DtoUser {
     private String adress;
     private String city;
 
-
     public DtoUser(User user) {
                 this.firstname = user.getFirstname();
                 this.lastname = user.getLastname();

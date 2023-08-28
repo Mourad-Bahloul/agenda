@@ -21,6 +21,4 @@ public class DtoRdvDispo {
     private int dureeRendezVous;
     private String description;
     private String profession;
-
-
 }

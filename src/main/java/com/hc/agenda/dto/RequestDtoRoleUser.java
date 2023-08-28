@@ -12,5 +12,4 @@ import lombok.NoArgsConstructor;
 public class RequestDtoRoleUser {
     private String role;
     private String userParam;
-
 }

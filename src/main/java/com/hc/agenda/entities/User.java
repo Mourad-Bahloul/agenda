@@ -34,7 +34,6 @@ public class User implements UserDetails {
     private String adress;
     private String city;
 
-
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "hc_user_roles",

@@ -22,5 +22,4 @@ public class DtoRendezVous {
     private Date dateDuRendezVous;
     private int dureeRendezVous;
     private String description;
-
 }

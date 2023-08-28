@@ -16,16 +16,14 @@ public class
 MainController {
     private final PageService pageService;
 
-    // Page principale, donne accès à ces différentes options :
 
-    @GetMapping("/agenda") /// A compléter apres ajout RdvDispo
+    @GetMapping("/agenda")
     @ResponseBody
     public ResponseEntity<DtoPageResponse> agendaUtilisateur(){
         return ResponseEntity.ok(pageService.infoPage("True"));
     }
 
 
-    //@CrossOrigin //(origins = "http://localhost:3000")
     @GetMapping("/getInfoUser")
     @ResponseBody
     public ResponseEntity<DtoUser> getInfo() {
@@ -38,13 +36,13 @@ MainController {
         return ResponseEntity.ok(pageService.modifUserPage(request));
     }
 
-    @GetMapping("/pro/rdv")         /// A compléter apres ajout RdvDispo
+    @GetMapping("/pro/rdv")
     @ResponseBody
     public ResponseEntity<DtoPageResponse> proRDVMain(){
         return ResponseEntity.ok(pageService.infoPage("True"));
     }
 
-    @GetMapping("/user/rdvSearch")  /// A compléter apres ajout RdvDispo
+    @GetMapping("/user/rdvSearch")
     @ResponseBody
     public ResponseEntity<DtoPageResponse> rdvSearch(){
         return ResponseEntity.ok(pageService.infoPage("True"));

@@ -47,7 +47,6 @@ public class RendezVousDispoService {
     etre stocké dans la base de données
      */
 
-
     public String serialiseriCal(Calendar calendar){
         try {
             CalendarOutputter outputter = new CalendarOutputter();  //permet de générer la représentation textuelle de l'objet iCalendar
@@ -144,7 +143,6 @@ public class RendezVousDispoService {
         return DtoPageResponse.builder()
                 .booleanPage("false")
                 .build();
-
     }
 
     public DtoPageResponse supprICalendar(RequestRdvDispoPro request){//A COMPLETER
@@ -260,9 +258,5 @@ public class RendezVousDispoService {
                 })
                 .collect(Collectors.toList());
         return listDtoRdvDispo;
-
     }
-
-
-
 }

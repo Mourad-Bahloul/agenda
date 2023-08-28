@@ -58,16 +58,12 @@ public class PageService {
                 .build();
     }
 
-
-
     public boolean comparePassword(String password, User utilisateur) {
         if(applicationConfig.passwordEncoder().matches(password,utilisateur.getPassword()))
             return true;
         return false;
 
     }
-
-    // Modif Utilisateur :
 
     public DtoPageResponse addRoleUser(RequestDtoRoleUser request){
         Role role = roleRepository.findByName(request.getRole()).orElseThrow();
@@ -92,7 +88,6 @@ public class PageService {
         var user = userRepository.findByEmail(request.getUserParam()).orElseThrow();
         if (user.removeRole(role))
         {
-            //user.removeRole(role);
             userRepository.save(user);
             return DtoPageResponse.builder()
                     .booleanPage("true")

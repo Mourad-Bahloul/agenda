@@ -9,7 +9,6 @@ import com.hc.agenda.repositories.RendezVousPrisRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -19,7 +18,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class RendezVousService {
-             // A COMPLETER
     private final RendezVousPrisRepository rendezVousPrisRepository;
 
     public DtoRendezVous getOneRdv(RequestRdvPris request) {
@@ -83,8 +81,7 @@ public class RendezVousService {
         int heure = cal.get(Calendar.HOUR_OF_DAY);
         int minute = cal.get(Calendar.MINUTE);
         int seconde = cal.get(Calendar.SECOND);
-        //if (rendezVousPrisRepository.findByNameRdv(request.getNameRdv()).isEmpty())
-           // {
+
                     RendezVousPris rdvPris = RendezVousPris.builder()
                             .nameRdv(request.getNameRdv())
                             .client(request.getClient())
@@ -110,11 +107,7 @@ public class RendezVousService {
                             .dureeRendezVous(rdvPris.getDureeRendezVous())
                             .description(rdvPris.getDescription())
                             .build();
-        //    }
-       // else
-        //    return DtoRendezVous.builder()
-          //          .dureeRendezVous(0)
-            //        .build();
+
     }
 }
 

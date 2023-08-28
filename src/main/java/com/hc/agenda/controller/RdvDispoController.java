@@ -43,7 +43,6 @@ public class RdvDispoController {
 
         return ResponseEntity.ok(rendezVousDispoService.voirICalendarPro(request));
     }
-
 }
 
 
